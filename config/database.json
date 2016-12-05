@@ -1,0 +1,10 @@
+{
+    "username": "root",
+    "password": "",
+    "database": "doml",
+    "options": {
+        "host": "localhost",
+        "dialect": "mysql"
+        
+    }
+}

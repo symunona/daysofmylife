@@ -1,0 +1,8 @@
+{
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20161121110008",
+    "require": "registry:dt/require#2.1.20+20160919185614",
+    "sequelize": "registry:dt/sequelize#3.4.1+20160929080558",
+    "validatorjs": "registry:dt/validatorjs#3.7.0+20161025104214"
+  }
+}
