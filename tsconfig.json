@@ -7,10 +7,12 @@
         "outDir": "lib"
     },
     "include": [
-        "tpyings/*",
+        "tpyings/**/*",
         "src/**/*"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/*.spec.ts"
     ]
+    
 }

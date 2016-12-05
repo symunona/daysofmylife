@@ -1,8 +1,14 @@
 {
   "globalDependencies": {
+    "koa-router": "registry:dt/koa-router#7.0.0+20160907102352",
     "node": "registry:dt/node#6.0.0+20161121110008",
+    "reflect-metadata": "registry:dt/reflect-metadata#0.0.0+20160630155503",
     "require": "registry:dt/require#2.1.20+20160919185614",
     "sequelize": "registry:dt/sequelize#3.4.1+20160929080558",
     "validatorjs": "registry:dt/validatorjs#3.7.0+20161025104214"
+  },
+  "dependencies": {
+    "koa-router": "registry:npm/koa-router#7.0.1+20160925140624",
+    "sequelize": "registry:npm/sequelize#4.0.0-1+20161101121248"
   }
 }

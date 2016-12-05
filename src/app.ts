@@ -1,18 +1,13 @@
 import * as Koa from 'koa';
-
-import Persistence from './persistence';
+import RestApi from './RestApi'
+import Persistence from './Persistence';
 
 class DaysOfMyLife {
     public static main(): void {
         const app = new Koa();
         
         // const persistence = new Persistence();
-        const restApi = new restApi(app);
-
-        
-        app.use(function*(){
-            this.body = 'Hello World';
-        })
+        const restApi = new RestApi(app);
 
         app.listen(3000, () => console.log('server started 3000'))
 
