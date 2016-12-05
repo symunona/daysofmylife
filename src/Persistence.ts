@@ -25,8 +25,10 @@ export default class Persistence{
             .map((name)=> this.instance.models[name.substr(0,name.length-3)] = require('../lib/models/'+name).default);
         
         for(var modelName in this.instance.models){
-            var Model = this.instance.models[modelName];
-            console.log('def', modelName, Object.keys(Model.getSchema()))
+            let Model = this.instance.models[modelName];
+            let schema = Model.getSchema();
+            this.instance.adapter.define( modelName.toLowerCase(), schema);
+            console.log('[Persistence] Defined', modelName);
             // console.log(Model);
             // debugger;
         }

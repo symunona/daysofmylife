@@ -27,11 +27,10 @@ export default class Model {
         console.log('save', this);
     }
 
-    static unique(target: any, key: string){
-        let model = {};
-        model[target.constructor.name] = {};
-        model[target.constructor.name][key] = { unique: true }; 
-        _.extend(Model.fields, model);
+    static unique(target: any, fieldName: string){
+                         
+        if (!Model.fields[target.constructor.name]) Model.fields[target.constructor.name] = {};
+        _.extend(Model.fields[target.constructor.name][fieldName], { unique: true });
     }
 
     static persist(type: string) : PropertyDecorator {
@@ -49,6 +48,7 @@ export default class Model {
     static getSchema(){
         let name = this.prototype.constructor.name;
         let fields = _.extend({}, this.fields['Model'], this.fields[name]);
+        console.log(fields);
         let definitionObject = {}
         for (let fieldName in fields){            
             let field = fields[fieldName];            
