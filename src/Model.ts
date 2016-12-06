@@ -7,8 +7,10 @@ import * as _ from 'lodash';
 
 
 export default class Model {
-
+    
     static fields = {};
+
+    static persistenceModel: Object;
 
     @Model.persist('string')
     id: string;
@@ -47,8 +49,7 @@ export default class Model {
 
     static getSchema(){
         let name = this.prototype.constructor.name;
-        let fields = _.extend({}, this.fields['Model'], this.fields[name]);
-        console.log(fields);
+        let fields = _.extend({}, this.fields['Model'], this.fields[name]);        
         let definitionObject = {}
         for (let fieldName in fields){            
             let field = fields[fieldName];            

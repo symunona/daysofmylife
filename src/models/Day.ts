@@ -13,16 +13,11 @@ export default class Day extends Model{
         
     @Model.persist('text')
     body: string;
-    
-    @Model.unique
+        
     @Model.persist('date')
     date: Date;
 
     @Model.persist('string')
     userId: string;
     
-}
-
-function persist(value: string){
-
 }

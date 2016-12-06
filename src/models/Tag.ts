@@ -1,6 +1,6 @@
 import Model from '../Model';
 
-export default class Counter extends Model{
+export default class Tag extends Model{
     constructor(){ super() };
     
     @Model.persist('string')
