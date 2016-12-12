@@ -3,7 +3,7 @@
 import * as Sequelize from "sequelize";
 import * as fs from "fs";
 
-const dbsettings = require('../config/database.json');
+const dbsettings = require('../../config/database.json');
 
 export default class Persistence{
     adapter: Object;
@@ -22,7 +22,7 @@ export default class Persistence{
         
         list
             .filter((name)=> name.endsWith('.js'))
-            .map((name)=> this.instance.models[name.substr(0,name.length-3)] = require('../lib/models/'+name).default);
+            .map((name)=> this.instance.models[name.substr(0,name.length-3)] = require('../../lib/models/'+name).default);
         
         for(var modelName in this.instance.models){
             let Model = this.instance.models[modelName];

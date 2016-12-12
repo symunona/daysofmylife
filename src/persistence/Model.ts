@@ -1,5 +1,5 @@
-/// <reference path="../typings/globals/reflect-metadata/index.d.ts" />
-/// <reference path="../typings/modules/sequelize/index.d.ts" />
+/// <reference path="../../typings/globals/reflect-metadata/index.d.ts" />
+/// <reference path="../../typings/modules/sequelize/index.d.ts" />
 
 import 'reflect-metadata';
 import * as Sequelize from "sequelize";

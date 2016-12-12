@@ -13,7 +13,16 @@ export default class User extends Model{
     
     @Model.persist('string')
     email: string;
+
+    @Model.persist('string')
+    gid: string;
         
+    @Model.persist('string')
+    fbid: string;
+
+    @Model.persist('string')
+    twid: string;
+
     @Model.persist('string')
     password: string;
 
