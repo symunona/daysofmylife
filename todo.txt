@@ -1,0 +1,10 @@
+
+
+
+- @decorators for url routes?
+- auth.ts nicer after that
+- db automigrate logic
+   - get current schema
+   - compare and update
+- template engine
+- custom auth restapi filters

@@ -20,7 +20,7 @@ class DaysOfMyLife {
 
         new Index(app);
         
-        app.listen(3000, () => console.log('server started 3000'))
+        app.listen(3001, () => console.log('server started 3001'))
 
         console.log('eo main')        
         return;

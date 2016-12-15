@@ -21,16 +21,17 @@ export default class Auth {
     private user: User;
     persistence: Persistence;
 
-    public static auth(next){
+    public static auth(){
         
         if (!this.isAuthenticated()) {
             console.warn('[Auth] tried to reach ', this.request.url);
-            this.redirect('/login');
+            this.redirect('/login');   
+            return false;         
         }
         else{
-            console.log('[Auth] granted ', this.request.url);
-            // next()
-        }        
+            console.log('[Auth] granted ', this.request.url);            
+            return true;
+        }
     }
 
     constructor(app: Koa) {
@@ -39,10 +40,23 @@ export default class Auth {
         let route = new KoaRouter();
 
         app.use(bodyParser())
-        app.use(convert(session()));
+        app.use(session());
         app.use(passport.initialize())
         app.use(passport.session())
 
+
+        route.post('/login', 
+            passport.authenticate('local', {
+                successRedirect: config.successRedirect,
+                failureRedirect: '/'
+            }))
+            
+
+
+        route.get('/logout', function () {
+            this.logout();
+            this.redirect('/')
+        })
 
 
         const fetchUser = (userFilter) => {
@@ -124,17 +138,7 @@ export default class Auth {
             }
         ))
 
-        route.post('/login',
-            passport.authenticate('local', {
-                successRedirect: '/app',
-                failureRedirect: '/'
-            }))
-
-
-        route.get('/logout', function () {
-            this.logout()
-            this.redirect('/')
-        })
+        
 
         route.get('/auth/facebook',
             passport.authenticate('facebook')
@@ -142,7 +146,7 @@ export default class Auth {
 
         route.get('/auth/facebook/callback',
             passport.authenticate('facebook', {
-                successRedirect: '/app',
+                successRedirect: config.successRedirect,
                 failureRedirect: '/'
             })
         )
@@ -153,7 +157,7 @@ export default class Auth {
 
         route.get('/auth/twitter/callback',
             passport.authenticate('twitter', {
-                successRedirect: '/app',
+                successRedirect: config.successRedirect,
                 failureRedirect: '/'
             })
         )
@@ -164,7 +168,7 @@ export default class Auth {
 
         route.get('/auth/google/callback',
             passport.authenticate('google', {
-                successRedirect: '/app',
+                successRedirect: config.successRedirect,
                 failureRedirect: '/'
             })
         )

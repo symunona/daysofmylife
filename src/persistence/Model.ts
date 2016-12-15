@@ -10,6 +10,10 @@ export default class Model {
     
     static fields = {};
 
+    static prefilters = {};
+
+    static postfilters = {};
+    
     static persistenceModel: Object;
 
     @Model.persist('string')
@@ -34,6 +38,26 @@ export default class Model {
         if (!Model.fields[target.constructor.name]) Model.fields[target.constructor.name] = {};
         _.extend(Model.fields[target.constructor.name][fieldName], { unique: true });
     }
+
+    static prefilter(target: any, functionName: string){
+        
+        console.log('[Model] Adding filter: ', functionName);
+        Model.prefilters[target.constructor.name] = target[functionName]
+    }
+    static postfilter(target: any, functionName: string){
+        
+        console.log('[Model] Adding filter: ', functionName);
+        Model.postfilters[target.constructor.name] = target[functionName]
+    }
+
+    // static prefilter(type: string) : PropertyDecorator {
+    //     console.log('prefilter eval', arguments)
+    //     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor){
+    //         console.log('prefilter', arguments, type)
+    //         // if (!Model.fields[target.constructor.name]) Model.fields[target.constructor.name] = {}; 
+    //         // _.extend(Model.fields[target.constructor.name], field);            
+    //     };        
+    // }
 
     static persist(type: string) : PropertyDecorator {
         return function (target: any, fieldName: string, descriptor: PropertyDescriptor) {
@@ -84,7 +108,20 @@ export default class Model {
 
             var funcNameRegex = /function (.{1,})\(/;
             var results = (funcNameRegex).exec((this).constructor.toString());
-            return (results && results.length > 1) ? results[1] : "";
-            
+            return (results && results.length > 1) ? results[1] : "";            
     }
+    public static getPlainObject(object): Object{
+        let ret = {};
+        let name = this.prototype.constructor.name;
+        let fields = _.extend({}, this.fields['Model'], this.fields[name]);        
+        for (let fieldName in fields){                        
+            ret[fieldName] = object[fieldName];
+        }        
+        return ret;    
+    }
+    public static getFields(){        
+        let name = this.prototype.constructor.name;
+        return Object.keys(Model.fields['Model']).concat(Object.keys(this.fields[name]));        
+    }
+    
 }

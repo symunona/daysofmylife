@@ -5,6 +5,8 @@ import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import Auth from './middleware/auth';
 
+const convert = require('koa-convert')
+
 export default class RestApi{
     routers: Object;
     persistence: Persistence;
@@ -15,33 +17,77 @@ export default class RestApi{
 
         for(var modelName in this.persistence.models){
             const urlRoot = modelName.toLowerCase(); 
-            // const Model = this.persistence.models[modelName];
+            const Model = this.persistence.models[modelName];
             const PersistenceModel = this.persistence.persistenceModels[modelName];
             let router = this.routers[modelName] = new KoaRouter({prefix: '/api/'+urlRoot});
             
             console.log('[REST] registering',modelName, ': /api/'+urlRoot);
+
             // Get list
-            router.get('/', async function (){                                      
-                        console.log('[REST] list... ', modelName, this.params.filter);                                   
-                        this.body = yield PersistenceModel.findAll(this.params.filter);
-                    }, Auth.auth);
-            router.get('/:id', async function () { 
-                        console.log('[REST] loading... ', this.params.id);                            
-                        this.body = yield PersistenceModel.findOne({id: this.params.id});    
-                    }, Auth.auth);
-            router.del('/:id', async function () { 
-                        console.log('[REST] deleting... ', this.params.id);                            
+            router.get('/', function*(){    
+
+                        if (!Auth.auth.call(this)) { return };
+
+                        var filter = this.params.filter;
+                        console.log('[REST] list... ', modelName, filter);
+
+                        if (Model.prefilters && Model.prefilters[modelName]){                            
+                            filter = Model.prefilters[modelName](filter, this);                            
+                            console.log('[REST] prefilter found!', filter);
+                        }
+
+                        let results = yield PersistenceModel.findAll(filter);    
+                        
+                        if (Model.postfilters && Model.postfilters[modelName]){
+                            
+                            results = Model.postfilters[modelName](results, this);                            
+                            console.log('[REST] postfilter found!', results);
+                        }
+                                    
+                        this.body = results;
+
+                        console.log('[REST] /list')          
+                    });
+            router.get('/:id', function *() { 
+                        
+                        if (!Auth.auth.call(this)) { return };
+                        
+                        console.log('[REST] loading... ', this.params.id);                        
+                        let result = yield PersistenceModel.findAll({where: {id: this.params.id}});
+                        result = result[0];
+
+                        if (Model.postfilters && Model.postfilters[modelName]){                            
+                            result = Model.postfilters[modelName]([result], this);  
+                            if (!result.length){
+                                this.body = '';
+                                return;                          
+                            }
+                            else{
+                                result = result[0];
+                            }
+                        }
+                        
+                        this.body = result;
+                    });
+            router.del('/:id', function *() { 
+
+                        if (!Auth.auth.call(this)) { return };
+
+                        console.log('[REST] deleting... ', this.params.id);      
+                        if (!Auth.auth.call(this)) { return };                      
                         this.body = yield this.persistence.query('DELETE FROM ? WHERE id = ?',
                             { replacements: [modelName.toLowerCase(), this.params.id], 
                                 type: this.persistence.QueryTypes.DELETE });
                         
-                    }, Auth.auth);
-            router.post('/', async function () { 
+                    });
+            router.post('/', function *() { 
+                    
+                    if (!Auth.auth.call(this)) { return };
                     console.log('[REST] saving... ', this.params);
                     var persistentModelToSave = new PersistenceModel(this.params);
-                    this.body = yield persistentModelToSave.save();    
+                    this.body = yield persistentModelToSave.save();
             }, Auth.auth);
-            
+
             app.use(router.routes());
         }    
     }
